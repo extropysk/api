@@ -4,14 +4,14 @@ import { mongodbAdapter } from 'better-auth/adapters/mongodb';
 import { bearer } from 'better-auth/plugins';
 import * as jwt from 'jsonwebtoken';
 import { MongoClient } from 'mongodb';
+import { BetterAuthConfig, JwtConfig } from 'src/config';
 
 const AUTH_PATHS_WITH_JWT = ['/sign-in/email', '/sign-up/email'];
 
 export function createAuth(config: {
   mongodbUri: string;
-  betterAuthSecret: string;
-  betterAuthUrl: string;
-  jwtSecret: string;
+  betterAuth: BetterAuthConfig;
+  jwt: JwtConfig;
 }) {
   const client = new MongoClient(config.mongodbUri);
   const db = client.db();
@@ -19,8 +19,8 @@ export function createAuth(config: {
   return betterAuth({
     database: mongodbAdapter(db, { client, transaction: false }),
     basePath: '/auth',
-    secret: config.betterAuthSecret,
-    baseURL: config.betterAuthUrl,
+    secret: config.betterAuth.secret,
+    baseURL: config.betterAuth.url,
     emailAndPassword: {
       enabled: true,
     },

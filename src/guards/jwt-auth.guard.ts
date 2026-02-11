@@ -26,7 +26,7 @@ export class JwtAuthGuard implements CanActivate {
     private readonly configService: ConfigService<Config, true>,
     private readonly reflector: Reflector,
   ) {
-    this.secret = this.configService.get('jwtSecret');
+    this.secret = this.configService.get('jwt');
   }
 
   canActivate(context: ExecutionContext): boolean {
