@@ -1,7 +1,6 @@
 import { betterAuth } from 'better-auth';
 import { createAuthMiddleware } from 'better-auth/api';
 import { mongodbAdapter } from 'better-auth/adapters/mongodb';
-import { bearer } from 'better-auth/plugins';
 import { MongoClient } from 'mongodb';
 import { BetterAuthConfig, JwtConfig } from 'src/config';
 import { Payload, sign } from '@extropysk/nest-core';
@@ -27,7 +26,6 @@ export function createAuth(config: {
     advanced: {
       disableCSRFCheck: true,
     },
-    plugins: [bearer()],
     hooks: {
       after: createAuthMiddleware(async (ctx) => {
         if (!AUTH_PATHS_WITH_JWT.includes(ctx.path ?? '')) return;
