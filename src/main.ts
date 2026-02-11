@@ -1,10 +1,21 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { cleanupOpenApiDoc } from 'nestjs-zod';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get<ConfigService>(ConfigService);
+
+  const swagger = new DocumentBuilder()
+    .setTitle('API')
+    .setVersion('dev')
+    .addBearerAuth()
+    .build();
+
+  const document = SwaggerModule.createDocument(app, swagger);
+  SwaggerModule.setup('docs', app, cleanupOpenApiDoc(document));
 
   await app.listen(configService.get<number>('port') ?? 3000);
 }
