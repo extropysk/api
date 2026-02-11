@@ -5,7 +5,11 @@ import { MongoClient } from 'mongodb';
 import { BetterAuthConfig, JwtConfig } from 'src/config';
 import { Payload, sign } from '@extropysk/nest-core';
 
-const AUTH_PATHS_WITH_JWT = ['/sign-in/email', '/sign-up/email'];
+const AUTH_PATHS_WITH_JWT = [
+  '/sign-in/email',
+  '/sign-up/email',
+  '/get-session',
+];
 
 export function createAuth(config: {
   mongodbUri: string;
