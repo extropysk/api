@@ -2,9 +2,9 @@ import { betterAuth } from 'better-auth';
 import { createAuthMiddleware } from 'better-auth/api';
 import { mongodbAdapter } from 'better-auth/adapters/mongodb';
 import { bearer } from 'better-auth/plugins';
-import * as jwt from 'jsonwebtoken';
 import { MongoClient } from 'mongodb';
 import { BetterAuthConfig, JwtConfig } from 'src/config';
+import { Payload, sign } from '@extropysk/nest-core';
 
 const AUTH_PATHS_WITH_JWT = ['/sign-in/email', '/sign-up/email'];
 
@@ -38,12 +38,14 @@ export function createAuth(config: {
         if (!returned?.user) return;
 
         const user = returned.user;
-        const token = jwt.sign(
-          { email: user.email, name: user.name, role: user.role },
-          'qweqw',
-          { subject: user.id, expiresIn: '1h' },
-        );
 
+        const payload: Payload = {
+          id: user.id,
+          email: user.email,
+          roles: [],
+        };
+
+        const token = sign(payload, config.jwt.secret, config.jwt.expiresIn);
         ctx.context.returned = { ...returned, jwt: token };
       }),
     },
