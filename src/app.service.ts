@@ -8,7 +8,7 @@ export class AppService {
   async getHello() {
     const res = await this.usersRepository.findById(
       'ewsn5e6LexlPekf1ZKZV4rvAF9KuV2O4',
-      { select: ['userId.companyId'], populate: ['userId.companyId'] },
+      { select: ['id'], populate: ['userId'] },
     );
 
     return res;
