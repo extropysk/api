@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 import { eq, count as drizzleCount, getTableName, SQL } from 'drizzle-orm';
 import { PgTable } from 'drizzle-orm/pg-core';
 import {
@@ -6,7 +5,6 @@ import {
   SelectResult,
   WithPopulated,
   PopulateKeys,
-  RefNode,
 } from 'src/db/dto/base.dto';
 import { IBaseRepository } from 'src/db/base.repository.interface';
 import { PaginatedQuery, PaginatedResponse } from 'src/db/dto/query.dto';
@@ -105,7 +103,7 @@ export function toRelationalOptions(
 
 export abstract class BaseRepository<
   TTable extends PgTable & { id: any },
-  TRelations extends Record<string, RefNode> = Record<string, RefNode>,
+  TRelations extends Record<string, unknown> = Record<string, unknown>,
   TSelect extends Base = TTable['$inferSelect'] & Base,
   TInsert = TTable['$inferInsert'],
 > implements IBaseRepository<TSelect, TRelations> {
