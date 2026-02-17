@@ -12,9 +12,6 @@ export type SelectResult<T, K extends string = string> = string extends K
   ? T
   : Pick<T, K & keyof T>;
 
-// Extract the first segment of a dot-separated string
-type Head<S extends string> = S extends `${infer H}.${string}` ? H : S;
-
 // Get sub-paths for a specific top-level key K from a union of dot paths
 type SubPaths<
   P extends string,
@@ -22,14 +19,25 @@ type SubPaths<
 > = P extends `${K}.${infer Rest}` ? Rest : never;
 
 // Get unique top-level keys from a union of dot paths
-export type PopulateKeys<P extends string> = Head<P>;
+export type PopulateKeys<P extends string> = P extends `${infer H}.${string}`
+  ? H
+  : P;
 
-// Strip prefix "K." from keys in TRefs to get nested refs
-type PrefixedRefs<TRefs extends Record<string, unknown>, K extends string> = {
-  [Key in keyof TRefs as Key extends `${K}.${infer Rest}`
-    ? Rest
-    : never]: TRefs[Key];
-};
+// Nested ref node: defines a populated type and optional nested refs
+export interface RefNode {
+  type: unknown;
+  refs?: Record<string, RefNode>;
+}
+
+// Extract the populated type from a RefNode
+type RefType<R extends RefNode> = R['type'];
+
+// Extract nested refs from a RefNode (empty record if none)
+type RefRefs<R extends RefNode> = R extends {
+  refs: infer C extends Record<string, RefNode>;
+}
+  ? C
+  : Record<string, never>;
 
 export type WithPopulated<
   T,
@@ -41,6 +49,12 @@ export type WithPopulated<
     ? T
     : Omit<T, PopulateKeys<P>> & {
         [K in PopulateKeys<P>]: K extends keyof TRefs
-          ? WithPopulated<TRefs[K], PrefixedRefs<TRefs, K>, SubPaths<P, K>>
+          ? TRefs[K] extends RefNode
+            ? WithPopulated<
+                RefType<TRefs[K]>,
+                RefRefs<TRefs[K]>,
+                SubPaths<P, K>
+              >
+            : unknown
           : unknown;
       };

@@ -7,7 +7,7 @@ import { Db } from 'src/db';
 import { account, user } from 'src/db/auth-schema';
 
 type AccountRelations = {
-  userId: typeof user.$inferSelect;
+  userId: { type: typeof user.$inferSelect };
 };
 
 @Injectable()

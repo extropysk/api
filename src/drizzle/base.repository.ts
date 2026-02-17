@@ -6,6 +6,7 @@ import {
   SelectResult,
   WithPopulated,
   PopulateKeys,
+  RefNode,
 } from 'src/db/dto/base.dto';
 import { IBaseRepository } from 'src/db/base.repository.interface';
 import { PaginatedQuery, PaginatedResponse } from 'src/db/dto/query.dto';
@@ -104,7 +105,7 @@ export function toRelationalOptions(
 
 export abstract class BaseRepository<
   TTable extends PgTable & { id: any },
-  TRelations extends Record<string, unknown> = Record<string, unknown>,
+  TRelations extends Record<string, RefNode> = Record<string, RefNode>,
   TSelect extends Base = TTable['$inferSelect'] & Base,
   TInsert = TTable['$inferInsert'],
 > implements IBaseRepository<TSelect, TRelations> {

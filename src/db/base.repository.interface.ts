@@ -4,12 +4,13 @@ import {
   WithPopulated,
   SelectResult,
   PopulateKeys,
+  RefNode,
 } from 'src/db/dto/base.dto';
 import { PaginatedQuery, PaginatedResponse } from 'src/db/dto/query.dto';
 
 export interface IBaseRepository<
   T extends Base,
-  TRefs extends Record<string, unknown> = Record<string, unknown>,
+  TRefs extends Record<string, RefNode> = Record<string, RefNode>,
 > {
   find<K extends string = string, P extends string = never>(
     query: PaginatedQuery<K, P>,
