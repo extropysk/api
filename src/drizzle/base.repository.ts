@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 import { eq, count as drizzleCount, getTableName, SQL } from 'drizzle-orm';
 import { PgTable } from 'drizzle-orm/pg-core';
-import { Base, SelectResult } from 'src/db/dto/base.dto';
+import { Base, SelectResult, WithPopulated } from 'src/db/dto/base.dto';
 import { IBaseRepository } from 'src/db/base.repository.interface';
 import { PaginatedQuery, PaginatedResponse } from 'src/db/dto/query.dto';
 
@@ -95,9 +95,10 @@ export function toRelationalOptions(
 
 export abstract class BaseRepository<
   TTable extends PgTable & { id: any },
+  TRelations extends Record<string, unknown> = Record<string, unknown>,
   TSelect extends Base = TTable['$inferSelect'] & Base,
   TInsert = TTable['$inferInsert'],
-> implements IBaseRepository<TSelect> {
+> implements IBaseRepository<TSelect, TRelations> {
   protected db: Db;
   protected table: TTable;
   protected tableName: string;
@@ -128,9 +129,9 @@ export abstract class BaseRepository<
     return this.queryTable.findMany(queryOptions) as Promise<TResult[]>;
   }
 
-  async find<K extends string = string>(
-    query: PaginatedQuery<K>,
-  ): Promise<PaginatedResponse<TSelect, K>> {
+  async find<K extends string = string, P extends string = never>(
+    query: PaginatedQuery<K, P>,
+  ): Promise<PaginatedResponse<WithPopulated<TSelect, TRelations, P>, K | P>> {
     const { where, sort, limit, page } = query;
 
     const whereClause = where
@@ -147,13 +148,16 @@ export abstract class BaseRepository<
     const totalDocs = await this.count(whereClause);
     const totalPages = Math.ceil(totalDocs / limit);
 
-    const docs = await this.findMany<SelectResult<TSelect, K>>(whereClause, {
+    const docs = (await this.findMany(whereClause, {
       offset,
       limit,
       orderBy,
       columns,
       with: withRelations,
-    });
+    })) as unknown as SelectResult<
+      WithPopulated<TSelect, TRelations, P>,
+      K | P
+    >[];
 
     return {
       docs,
@@ -166,10 +170,10 @@ export abstract class BaseRepository<
     };
   }
 
-  async findOne<TResult = TSelect>(
+  async findOne(
     where: SQL,
     options?: { select?: string[]; populate?: string[] },
-  ): Promise<TResult | null> {
+  ): Promise<any> {
     const { columns, with: withRelations } = toRelationalOptions(
       options?.select,
       options?.populate,
@@ -180,17 +184,17 @@ export abstract class BaseRepository<
     if (withRelations) queryOptions.with = withRelations;
 
     const result = await this.queryTable.findFirst(queryOptions);
-    return (result ?? null) as TResult | null;
+    return result ?? null;
   }
 
-  async findById<K extends string = string>(
+  async findById<K extends string = string, P extends string = never>(
     id: string,
-    options?: { select?: K[]; populate?: string[] },
-  ): Promise<SelectResult<TSelect, K> | null> {
-    return this.findOne<SelectResult<TSelect, K>>(
-      eq(this.table.id, id),
-      options,
-    );
+    options?: { select?: K[]; populate?: P[] },
+  ): Promise<SelectResult<
+    WithPopulated<TSelect, TRelations, NoInfer<P>>,
+    NoInfer<K> | NoInfer<P>
+  > | null> {
+    return this.findOne(eq(this.table.id, id), options);
   }
 
   async count(where?: SQL): Promise<number> {

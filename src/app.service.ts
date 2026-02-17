@@ -5,10 +5,10 @@ import { UsersRepository } from 'src/users.repository';
 export class AppService {
   constructor(private usersRepository: UsersRepository) {}
 
-  async getHello() {
+  async getHello(): Promise<{ userId: unknown } | null> {
     const a = await this.usersRepository.findById(
       'lwL9wJ1ZDaZAszC6UhAUKRxIe1Sm9Iqc',
-      { populate: [], select: ['userId'] },
+      { select: ['id', 'userId'], populate: ['userId'] },
     );
     return a;
   }

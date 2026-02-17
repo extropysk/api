@@ -1,15 +1,21 @@
-import { Base, SelectResult } from 'src/db/dto/base.dto';
+import { Base, WithPopulated, SelectResult } from 'src/db/dto/base.dto';
 import { PaginatedQuery, PaginatedResponse } from 'src/db/dto/query.dto';
 
-export interface IBaseRepository<T extends Base> {
-  find<K extends string = string>(
-    query: PaginatedQuery<K>,
-  ): Promise<PaginatedResponse<T, K>>;
+export interface IBaseRepository<
+  T extends Base,
+  TRefs extends Record<string, unknown> = Record<string, unknown>,
+> {
+  find<K extends string = string, P extends string = never>(
+    query: PaginatedQuery<K, P>,
+  ): Promise<PaginatedResponse<WithPopulated<T, TRefs, P>, K | P>>;
 
-  findById<K extends string = string>(
+  findById<K extends string = string, P extends string = never>(
     id: string,
-    options?: { select?: K[]; populate?: string[] },
-  ): Promise<SelectResult<T, K> | null>;
+    options?: { select?: K[]; populate?: P[] },
+  ): Promise<SelectResult<
+    WithPopulated<T, TRefs, NoInfer<P>>,
+    NoInfer<K> | NoInfer<P>
+  > | null>;
 
   create(doc: Omit<T, 'id'>): Promise<T>;
 

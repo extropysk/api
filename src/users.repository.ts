@@ -4,7 +4,11 @@ import { BaseRepository } from 'src/drizzle/base.repository';
 
 import { DATABASE } from '@extropysk/nest-pg';
 import { Db } from 'src/db';
-import { account } from 'src/db/auth-schema';
+import { account, user } from 'src/db/auth-schema';
+
+type AccountRelations = {
+  userId: typeof user.$inferSelect;
+};
 
 @Injectable()
 export class UsersRepository extends BaseRepository<typeof account> {

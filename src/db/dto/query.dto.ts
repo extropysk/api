@@ -1,6 +1,6 @@
 import { createZodDto } from 'nestjs-zod';
 import z from 'zod';
-import { Base, SelectResult } from './base.dto';
+import { SelectResult } from './base.dto';
 import { parseWhereParam } from '../../drizzle/utils/query.utils';
 
 const csvToArray = z
@@ -26,16 +26,19 @@ export const PaginatedQuerySchema = z.object({
 
 export class PaginatedQueryDto extends createZodDto(PaginatedQuerySchema) {}
 
-export interface PaginatedQuery<K extends string = string> {
+export interface PaginatedQuery<
+  K extends string = string,
+  P extends string = never,
+> {
   where?: Record<string, unknown>;
   sort?: string;
   limit: number;
   page: number;
   select?: K[];
-  populate?: string[];
+  populate?: P[];
 }
 
-export interface PaginatedResponse<T extends Base, K extends string = string> {
+export interface PaginatedResponse<T, K extends string = string> {
   docs: SelectResult<T, K>[];
   totalDocs: number;
   limit: number;
