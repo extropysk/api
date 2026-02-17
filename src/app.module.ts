@@ -8,10 +8,20 @@ import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { createAuth } from 'src/auth';
 import { CoreModule } from '@extropysk/nest-core';
+import { UsersRepository } from 'src/users.repository';
+import { DatabaseModule } from '@extropysk/nest-pg';
+import * as schema from 'src/db';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [config] }),
+    DatabaseModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const url = configService.get<string>('databaseUrl') as string;
+        return { url, schema };
+      },
+    }),
     AuthModule.forRootAsync({
       disableGlobalAuthGuard: true,
       inject: [ConfigService],
@@ -33,7 +43,9 @@ import { CoreModule } from '@extropysk/nest-core';
   ],
   controllers: [AppController],
   providers: [
+    UsersRepository,
     AppService,
+
     { provide: APP_PIPE, useClass: ZodValidationPipe },
     { provide: APP_INTERCEPTOR, useClass: ZodSerializerInterceptor },
   ],

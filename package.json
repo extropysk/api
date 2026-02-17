@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@extropysk/nest-core": "^1.7.0",
+    "@extropysk/nest-pg": "^1.0.0",
     "@nestjs/common": "^11.1.6",
     "@nestjs/config": "^4.0.3",
     "@nestjs/core": "^11.1.6",
@@ -35,6 +36,7 @@
     "drizzle-orm": "^0.45.1",
     "jsonwebtoken": "^9.0.3",
     "nestjs-zod": "^5.1.1",
+    "pg": "^8.18.0",
     "postgres": "^3.4.8",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
