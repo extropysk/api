@@ -10,7 +10,7 @@ export interface JwtConfig {
 
 export interface Config {
   port: number;
-  mongodbUri: string;
+  databaseUrl: string;
   betterAuth: BetterAuthConfig;
   jwt: JwtConfig;
 }
@@ -18,7 +18,8 @@ export interface Config {
 export default (): Config => {
   return {
     port: parseInt(process.env.PORT || '3000', 10),
-    mongodbUri: process.env.MONGODB_URI || 'mongodb://localhost:27017/extropy',
+    databaseUrl:
+      process.env.DATABASE_URL || 'postgresql://localhost:5432/extropy',
     betterAuth: {
       secret: process.env.BETTER_AUTH_SECRET || '',
       url: process.env.BETTER_AUTH_URL || 'http://localhost:3000',

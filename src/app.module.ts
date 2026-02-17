@@ -17,7 +17,7 @@ import { CoreModule } from '@extropysk/nest-core';
       inject: [ConfigService],
       useFactory: (configService: ConfigService<Config, true>) => ({
         auth: createAuth({
-          mongodbUri: configService.get('mongodbUri'),
+          databaseUrl: configService.get('databaseUrl'),
           betterAuth: configService.get<BetterAuthConfig>('betterAuth'),
           jwt: configService.get<JwtConfig>('jwt'),
         }),
