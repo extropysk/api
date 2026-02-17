@@ -28,7 +28,7 @@ export class PaginatedQueryDto extends createZodDto(PaginatedQuerySchema) {}
 
 export interface PaginatedQuery<
   K extends string = string,
-  P extends string = never,
+  P extends string = string,
 > {
   where?: Record<string, unknown>;
   sort?: string;

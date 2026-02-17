@@ -6,6 +6,8 @@ export class BaseDto implements Base {
   id: string;
 }
 
+export type NoInfer<T> = [T][T extends any ? 0 : never];
+
 export type SelectResult<T, K extends string = string> = string extends K
   ? T
   : Pick<T, K & keyof T>;

@@ -11,7 +11,10 @@ type AccountRelations = {
 };
 
 @Injectable()
-export class UsersRepository extends BaseRepository<typeof account> {
+export class UsersRepository extends BaseRepository<
+  typeof account,
+  AccountRelations
+> {
   constructor(@Inject(DATABASE) db: Db) {
     super(db, account);
   }
