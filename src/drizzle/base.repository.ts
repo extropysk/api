@@ -1,7 +1,12 @@
 /* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 import { eq, count as drizzleCount, getTableName, SQL } from 'drizzle-orm';
 import { PgTable } from 'drizzle-orm/pg-core';
-import { Base, SelectResult, WithPopulated } from 'src/db/dto/base.dto';
+import {
+  Base,
+  SelectResult,
+  WithPopulated,
+  PopulateKeys,
+} from 'src/db/dto/base.dto';
 import { IBaseRepository } from 'src/db/base.repository.interface';
 import { PaginatedQuery, PaginatedResponse } from 'src/db/dto/query.dto';
 
@@ -50,27 +55,31 @@ function parseSelect(select: string[]): RelationalOptions {
 }
 
 function parsePopulate(populate: string[]): Record<string, boolean | object> {
-  const withRelations: Record<string, boolean | Record<string, boolean>> = {};
+  const root: Record<string, any> = {};
 
-  for (const field of populate) {
-    const dot = field.indexOf('.');
-    if (dot === -1) {
-      withRelations[field] = withRelations[field] ?? true;
-    } else {
-      const relation = field.slice(0, dot);
-      const column = field.slice(dot + 1);
-      const existing = withRelations[relation];
-      const cols = typeof existing === 'object' ? existing : {};
-      cols[column] = true;
-      withRelations[relation] = cols;
+  for (const path of populate) {
+    const parts = path.split('.');
+    let current = root;
+
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+      const isLast = i === parts.length - 1;
+
+      if (isLast) {
+        current[part] = current[part] ?? true;
+      } else {
+        if (current[part] === undefined || current[part] === true) {
+          current[part] = {};
+        }
+        if (!current[part].with) {
+          current[part].with = {};
+        }
+        current = current[part].with;
+      }
     }
   }
 
-  return Object.fromEntries(
-    Object.entries(withRelations).map(([key, value]) =>
-      typeof value === 'object' ? [key, { columns: value }] : [key, value],
-    ),
-  );
+  return root;
 }
 
 export function toRelationalOptions(
@@ -131,7 +140,12 @@ export abstract class BaseRepository<
 
   async find<K extends string = string, P extends string = never>(
     query: PaginatedQuery<K, P>,
-  ): Promise<PaginatedResponse<WithPopulated<TSelect, TRelations, P>, K | P>> {
+  ): Promise<
+    PaginatedResponse<
+      WithPopulated<TSelect, TRelations, P>,
+      K | PopulateKeys<P>
+    >
+  > {
     const { where, sort, limit, page } = query;
 
     const whereClause = where
@@ -156,7 +170,7 @@ export abstract class BaseRepository<
       with: withRelations,
     })) as unknown as SelectResult<
       WithPopulated<TSelect, TRelations, P>,
-      K | P
+      K | PopulateKeys<P>
     >[];
 
     return {
@@ -192,7 +206,7 @@ export abstract class BaseRepository<
     options?: { select?: K[]; populate?: P[] },
   ): Promise<SelectResult<
     WithPopulated<TSelect, TRelations, NoInfer<P>>,
-    NoInfer<K> | NoInfer<P>
+    NoInfer<K> | PopulateKeys<NoInfer<P>>
   > | null> {
     return this.findOne(eq(this.table.id, id), options);
   }

@@ -4,10 +4,11 @@ import { BaseRepository } from 'src/drizzle/base.repository';
 
 import { DATABASE } from '@extropysk/nest-pg';
 import { Db } from 'src/db';
-import { account, user } from 'src/db/auth-schema';
+import { account, company, user } from 'src/db/auth-schema';
 
 type AccountRelations = {
   userId: typeof user.$inferSelect;
+  'userId.companyId': typeof company.$inferSelect;
 };
 
 @Injectable()
