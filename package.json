@@ -24,6 +24,7 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@extropysk/nest-common": "^1.2.0",
     "@extropysk/nest-core": "^1.7.0",
     "@extropysk/nest-pg": "^1.0.0",
     "@nestjs/common": "^11.1.6",

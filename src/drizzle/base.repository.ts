@@ -5,9 +5,9 @@ import {
   SelectResult,
   WithPopulated,
   PopulateKeys,
-} from 'src/db/dto/base.dto';
-import { IBaseRepository } from 'src/db/base.repository.interface';
-import { PaginatedQuery, PaginatedResponse } from 'src/db/dto/query.dto';
+} from '@extropysk/nest-common';
+import { IBaseRepository } from '@extropysk/nest-common';
+import { PaginatedQuery, PaginatedResponse } from '@extropysk/nest-common';
 
 import {
   convertWhereToDrizzle,
