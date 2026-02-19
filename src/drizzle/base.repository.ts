@@ -183,10 +183,13 @@ export abstract class BaseRepository<
     };
   }
 
-  async findOne(
+  async findOne<K extends string = string, P extends string = never>(
     where: SQL,
-    options?: { select?: string[]; populate?: string[] },
-  ): Promise<any> {
+    options?: { select?: K[]; populate?: P[] },
+  ): Promise<SelectResult<
+    WithPopulated<TSelect, TRelations, NoInfer<P>>,
+    NoInfer<K> | PopulateKeys<NoInfer<P>>
+  > | null> {
     const { columns, with: withRelations } = toRelationalOptions(
       options?.select,
       options?.populate,
