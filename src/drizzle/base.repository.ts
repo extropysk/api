@@ -7,6 +7,7 @@ import {
   PopulateKeys,
 } from '@extropysk/nest-common';
 import { IBaseRepository } from '@extropysk/nest-common';
+
 import { PaginatedQuery, PaginatedResponse } from '@extropysk/nest-common';
 
 import {
@@ -104,9 +105,9 @@ export function toRelationalOptions(
 export abstract class BaseRepository<
   TTable extends PgTable & { id: any },
   TRelations extends Record<string, unknown> = Record<string, unknown>,
-  TSelect extends Base = TTable['$inferSelect'] & Base,
   TInsert = TTable['$inferInsert'],
-> implements IBaseRepository<TSelect, TRelations> {
+  TSelect extends Base = TTable['$inferSelect'] & Base,
+> implements IBaseRepository<TSelect, TRelations, TInsert> {
   protected db: Db;
   protected table: TTable;
   protected tableName: string;
@@ -226,14 +227,14 @@ export abstract class BaseRepository<
     return (result as any[])[0]?.count ?? 0;
   }
 
-  async create(doc: Omit<TSelect, 'id'>): Promise<TSelect> {
+  async create(doc: TInsert): Promise<TSelect> {
     const result = await (
       this.db.insert(this.table as any).values(doc as any) as any
     ).returning();
     return result[0] as TSelect;
   }
 
-  async updateOne(where: SQL, data: Partial<TSelect>): Promise<boolean> {
+  async updateOne(where: SQL, data: Partial<TInsert>): Promise<boolean> {
     const result = await (
       this.db
         .update(this.table as any)
@@ -243,7 +244,7 @@ export abstract class BaseRepository<
     return (result as any[]).length > 0;
   }
 
-  async updateById(id: string, update: Partial<TSelect>): Promise<boolean> {
+  async updateById(id: string, update: Partial<TInsert>): Promise<boolean> {
     return this.updateOne(eq(this.table.id, id), update);
   }
 

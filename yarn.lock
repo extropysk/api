@@ -727,10 +727,10 @@
     "@eslint/core" "^0.17.0"
     levn "^0.4.1"
 
-"@extropysk/nest-common@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@extropysk/nest-common/-/nest-common-1.2.0.tgz#3b1a57330b1e4361dbacd7b6794b8ac8ad3ed4e6"
-  integrity sha512-G8MVH4eN09FinzQYyN2hGHIIF0sGW9RTbQspTvs9LaLHi5N5isSk2AWd9L9PLi5j5VTAqL3xIX6j13G97AcwPg==
+"@extropysk/nest-common@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@extropysk/nest-common/-/nest-common-1.2.2.tgz#2e411a8c7546b165af4c4d90883a885b55be7f44"
+  integrity sha512-03ek5j79JyfBkZikaXkMPzYU9fYwF3Y2ujZtDHJFeQL/LBkcB+E2OvtTIqrumBKT9K2ROfwlcQd9ddSwcPEkVQ==
 
 "@extropysk/nest-core@^1.7.0":
   version "1.7.0"
