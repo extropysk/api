@@ -6,10 +6,12 @@ export class AppService {
   constructor(private usersRepository: UsersRepository) {}
 
   async getHello() {
-    const res = await this.usersRepository.findById(
-      'k2QFfA0bof8IkrEoX9Uh4KDbeDPAaG8d',
-      { select: ['id'], populate: ['userId'] },
-    );
+    const res = await this.usersRepository.find({
+      limit: 10,
+      page: 1,
+      select: ['id'],
+      populate: ['userId'],
+    });
 
     return res;
   }

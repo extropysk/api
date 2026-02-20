@@ -26,7 +26,7 @@
   "dependencies": {
     "@extropysk/nest-common": "^1.2.2",
     "@extropysk/nest-core": "^1.7.0",
-    "@extropysk/nest-pg": "^1.0.0",
+    "@extropysk/nest-pg": "^1.0.1",
     "@nestjs/common": "^11.1.6",
     "@nestjs/config": "^4.0.3",
     "@nestjs/core": "^11.1.6",

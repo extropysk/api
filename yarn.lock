@@ -740,10 +740,10 @@
     crypto "^1.0.1"
     jsonwebtoken "^9.0.2"
 
-"@extropysk/nest-pg@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@extropysk/nest-pg/-/nest-pg-1.0.0.tgz#72882fa6cc4bfa699d95ba03a47d50afd1fe2520"
-  integrity sha512-Qogfm1PTwTaO6nVSONqN2lxEgCK6T7uWaHhc1mnQFd5IQCO7y3wvbauNeSbNDxHlXGSAqSbdCrLxGkf6QATrAQ==
+"@extropysk/nest-pg@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@extropysk/nest-pg/-/nest-pg-1.0.1.tgz#4dc3b65164e63c39b369ccec6d69be40f8d5f937"
+  integrity sha512-YSvfEkpuh2I5O5Ri3PAdnKAZCdFnKW9uUx2x7d7/wJmFo8Q7QtRanciNGoHxSg++IyF/mARFKpcRrzu6X/mAMw==
 
 "@humanfs/core@^0.19.1":
   version "0.19.1"
