@@ -27,6 +27,7 @@ export function createAuth(config: {
     emailAndPassword: {
       enabled: true,
     },
+    trustedOrigins: ['*'],
     advanced: {
       disableCSRFCheck: true,
     },
